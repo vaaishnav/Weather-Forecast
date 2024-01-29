@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEATHER </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Include Bootstrap Icons from a different CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.15.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-8 col-lg-6 col-xl-4">
+
+
+                    
+
+                        <div class="d-flex">
+                            <h6 class="flex-grow-1 mb-4">Weather Forecast</h6>
+                        </div>
+                        <div class="text-center mb-3">
+                            <input type="text" id="locationInput" placeholder="Enter location">
+                            <button onclick="getRandomCountry()" class="btn btn-primary">Click me</button>
+
+                  
+
+                    
+
+                    <div class="mb-4 pb-2">
+
+
+
+                </div>
+            </div>
+
+
+                    <div class="card bg-dark text-white" id="result">
+                        
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+
+<script>
+    const getRandomCountry = async () => {
+        //make api call
+        try {
+            const state = document.getElementById("locationInput").value;
+
+            const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${state}&appid=8ac5c4d57ba6a4b3dfcf622700447b1e&units=metric`);
+
+            const allWeather = await weather.json()
+            console.log(allWeather);
+            const temp = allWeather.main.temp
+            const feelsTemp = allWeather.main.feels_like
+            const place = allWeather.name
+            const country = allWeather.sys.country
+            const humidity = allWeather.main.humidity
+            const wind = allWeather.wind.speed
+            const pressure = allWeather.main.pressure
+            const timezone = allWeather.timezone
+            console.log(pressure);
+
+            // Your provided timezone offset in seconds (19800 seconds is GMT +05:30)
+            const timezoneOffsetInSeconds = timezone;
+
+            // Get the current UTC time in milliseconds
+            const currentUTCTime = Date.now();
+
+            // Calculate the local time by adding the timezone offset
+            const localTime = new Date(currentUTCTime + timezoneOffsetInSeconds * 1000);
+
+            // Format the date according to the desired format
+            const options = {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            };
+            const formattedTime = localTime.toLocaleString('en-US', options);
+
+
+
+
+
+            result.innerHTML = `<div class="bg-image" style="border-radius: 35px;">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/draw1.webp"
+                                class="card-img" alt="weather" />
+                            <div class="mask" style="background-color: rgba(190, 216, 232, .5);"></div>
+                        </div>
+                        <div class="card-img-overlay text-dark ">
+                            <h4 class="mb-0">${place}, ${country}</h4>
+                            <p class="display-2 my-">${temp}°C</p>
+                            <p class="m">Feels Like: <strong>- ${feelsTemp}°C</strong></p>
+                            <p>humidity:- <strong> ${humidity}%</strong></p>
+                            <p>wind:- <strong> ${wind}</strong></p>
+                            <p>pressure:- <strong> ${pressure}</strong></p>
+
+                            <div class="d-flex flex-row align-items-center">
+                                <p class="mb-0 me-4">${formattedTime}</p>
+                                <i class="fas fa-cloud fa-3x" style="color: #eee;"></i>
+                            </div>
+                        </div>
+            
+            `
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+</script>
+
+</html>
